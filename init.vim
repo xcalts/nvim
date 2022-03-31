@@ -29,7 +29,7 @@ Plug 'ncm2/float-preview.nvim'
 Plug 'puremourning/vimspector'
 Plug 'APZelos/blamer.nvim'
 Plug 'sirver/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 call plug#end()
 
 
@@ -157,7 +157,7 @@ nnoremap <leader>h :call ToggleHiddenAll()<CR>
 " ***************************************
 
 " ***************************************
-" NERD TREE:
+" NERDTREE:
 map <leader>n :NERDTreeToggle<CR>
 let g:NERDTreeIgnore = ['^bin$[[dir]]', '^obj$[[dir]]']
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -166,6 +166,7 @@ if has('nvim')
 else
     let NERDTreeBookmarksFile = '~/.vim' . '/NERDTreeBookmarks'
 endif
+let NERDTreeShowHidden=1
 " ***************************************
 
 
@@ -308,4 +309,35 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " ***************************************
 " BLAMER:
 let g:blamer_enabled = 1
+" ***************************************
+
+" ***************************************
+" MARKDOWNPREVIEW:
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+let g:mkdp_command_for_global = 0
+let g:mkdp_open_to_the_world = 0
+let g:mkdp_open_ip = ''
+let g:mkdp_browser = ''
+let g:mkdp_echo_preview_url = 0
+let g:mkdp_browserfunc = ''
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1,
+    \ 'sequence_diagrams': {},
+    \ 'flowchart_diagrams': {},
+    \ 'content_editable': v:false,
+    \ 'disable_filename': 0
+    \ }
+let g:mkdp_markdown_css = ''
+let g:mkdp_highlight_css = ''
+let g:mkdp_port = ''
+let g:mkdp_page_title = '「${name}」'
+let g:mkdp_filetypes = ['markdown']
 " ***************************************
