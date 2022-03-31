@@ -289,7 +289,7 @@ autocmd FileType cs nnoremap <leader>mxu :OmniSharpFixUsings<cr>
 
 
 " ***************************************
-" Float Preview:
+" FLOATPREVIEW:
 let g:float_preview#docked = 1
 " ***************************************
 
@@ -303,4 +303,9 @@ let g:vimspector_enable_mappings = 'HUMAN'
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" ***************************************
+
+" ***************************************
+" BLAMER:
+let g:blamer_enabled = 1
 " ***************************************
