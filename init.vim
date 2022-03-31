@@ -28,6 +28,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'ncm2/float-preview.nvim'
 Plug 'puremourning/vimspector'
 Plug 'APZelos/blamer.nvim'
+Plug 'sirver/ultisnips'
+Plug 'honza/vim-snippets'
 call plug#end()
 
 
@@ -252,6 +254,7 @@ let g:lightline#ale#indicator_ok = "\uf00c "
 
 " ***************************************
 " OMNISHARP:
+let g:OmniSharp_want_snippet = 1
 let g:OmniSharp_server_use_net6 = 1
 let g:OmniSharp_popup_position = 'atcursor'
 let g:OmniSharp_popup_options = {
@@ -293,4 +296,11 @@ let g:float_preview#docked = 1
 " ***************************************
 " VIMSPECTOR:
 let g:vimspector_enable_mappings = 'HUMAN'
+" ***************************************
+
+" ***************************************
+" ULTISNIPS:
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " ***************************************
