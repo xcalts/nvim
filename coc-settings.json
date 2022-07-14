@@ -1,0 +1,17 @@
+{
+  // Require .prettierrc
+  "prettier.requireConfig": true,
+
+  // Run prettier (and others)
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "markdown",
+    "Markdown",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  "coc.preferences.currentFunctionSymbolAutoUpdate": true
+}
