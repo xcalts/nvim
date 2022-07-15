@@ -20,7 +20,12 @@ Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
-Plug 'vim-airline/vim-airline'
+Plug 'iamcco/coc-vimlsp', {'do': 'yarn install --frozen-lockfile'}
+Plug 'coc-extensions/coc-omnisharp', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
+Plug 'josa42/coc-docker', {'do': 'yarn install --frozen-lockfile'}
+Plug 'neoclide/coc-yaml', {'do': 'yarn install --frozen-lockfile'}
+Plug 'nvim-lualine/lualine.nvim'
 Plug 'rcarriga/nvim-notify'
 Plug 'ellisonleao/gruvbox.nvim'
 Plug 'puremourning/vimspector'
@@ -28,13 +33,14 @@ Plug 'folke/which-key.nvim'
 Plug 'APZelos/blamer.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
+Plug 'fannheyward/telescope-coc.nvim'
 Plug 'akinsho/toggleterm.nvim', {'tag' : 'v2.*'}
 Plug 'numToStr/Comment.nvim'
-Plug 'OmniSharp/omnisharp-vim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'romgrk/barbar.nvim'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'lukas-reineke/indent-blankline.nvim'
 call plug#end()
 
 " =WhichKey=
@@ -43,6 +49,24 @@ lua << EOF
 require("which-key").setup {}
 local wk = require("which-key")
 wk.register({
+  ["<leader>n"]  = { name = "+NvimTree" },
+  ["<leader>no"]  = { "<cmd>NvimTreeToggle<cr>", "NvimTree: open and close tree." },
+
+  ["<leader>c"]  = { name = "+Customs" },
+  ["<leader>co"] = { ":setlocal spell! spelllang=en_us<cr>", "Customs: check spell." },
+
+  ["<leader>f"]  = { name = "+Telescope"},
+  ["<leader>ff"] = { "<cmd>Telescope find_files<cr>", "Telescope: lists files in your cwd." },
+  ["<leader>fg"] = { "<cmd>Telescope live_grep<cr>", "Telescope: search for a string in your cwd live." },
+  ["<leader>fb"] = { "<cmd>Telescope buffers<cr>", "Telescope: lists open buffers in current instance." },
+  ["<leader>fr"] = { "<cmd>Telescope coc references<cr>", "Telescope: popup references." },
+  ["<leader>fh"] = { "<cmd>Telescope notify<cr>", "Telescope: search the history." },
+  ["<leader>fd"] = { "<cmd>Telescope coc diagnostics<cr>", "Telescope: search the diagnostics." },
+
+  ["<leader>t"]  = { name = "+Toggleterm" },
+  ["<leader>tt"] = { "<cmd>ToggleTerm size=20 dir=. direction=horizontal<cr>", "ToggleTerm: spawn a terminal." },
+  ["<leader>tg"] = { "<cmd>lua _lazygit_toggle()<cr>", "ToggleTerm: spawn lazygit." },
+
   ["<F5>"]       = { "<Plug>VimspectorContinue", "Vimspector: start/continue debugging." },
   ["<S-F5>"]     = { "<Plug>VimspectorStop", "Vimspector: stop debugging." },
   ["<CS-F5"]     = { "<Plug>VimspectorRestart", "Vimspector: restart debugging." },
@@ -52,29 +76,43 @@ wk.register({
   ["<F11>"]      = { "<Plug>VimspectorStepInto", "Vimspector: step into." },
   ["<S-F11>"]    = { "<Plug>VimspectorStepOut", "Vimspector: step out of current function." },
 
-  ["<leader>n"]  = { "<cmd>NvimTreeToggle<cr>", "NvimTree: open and close tree." },
-
-  ["<leader>c"]  = { name = "+Customs" },
-  ["<leader>co"] = { ":setlocal spell! spelllang=en_us<cr>", "Customs: check spell." },
-
-  ["<leader>g"]  = { name = "+Coc"},
-  ["<F12>"]      = { "<Plug>(coc-implementation)", "Coc: go to implementation." },
-  ["<S-F12>"]    = { "<Plug>(coc-references)", "Coc: find references." },
-  ["<F2>"]       = { "<Plug>(coc-rename)", "Coc: rename symbol." },
-
-  ["<leader>f"]  = { name = "+Telescope"},
-  ["<leader>ff"] = { "<cmd>Telescope find_files<cr>", "Telescope: lists files in your cwd." },
-  ["<leader>fg"] = { "<cmd>Telescope live_grep<cr>", "Telescope: search for a string in your cwd live." },
-  ["<leader>fb"] = { "<cmd>Telescope buffers<cr>", "Telescope: lists open buffers in current instance." },
-
-  ["<leader>t"]  = { name = "+Toggleterm" },
-  ["<leader>tt"] = { "<cmd>ToggleTerm size=20 dir=. direction=horizontal<cr>", "ToggleTerm: spawn a terminal." },
-  ["<leader>tg"] = { "<cmd>lua _lazygit_toggle()<cr>", "ToggleTerm: spawn lazygit." },
-  ["<A-,>"]    = { "<cmd>BufferPrevious<cr>", "" },
-  ["<A-.>"]    = { "<cmd>BufferNext<cr>", "" },
-  ["<A-w>"]     = { "<cmd>BufferClose<cr>", "" },
 })
 EOF
+
+" =Keybindings=
+
+nmap <silent> <F2> <Plug>(coc-definition)
+nmap <silent> <F12> <Plug>(coc-implementation)
+nnoremap <silent>    <A-,> <Cmd>BufferPrevious<CR>
+nnoremap <silent>    <A-.> <Cmd>BufferNext<CR>
+nnoremap <silent>    <A-w> <Cmd>BufferClose<CR>
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+" =IndentBlankline=
+lua << EOF
+require("indent_blankline").setup {}
+EOF
+
+" =Telescope=
+lua << EOF
+require("telescope").setup({
+  extensions = {
+    coc = { theme = 'ivy' }
+  },
+})
+require('telescope').load_extension('coc')
+require("telescope").load_extension("notify")
+EOF
+
+" =Lualine=
+lua << END
+require('lualine').setup()
+END
 
 " =Blamer=
 let g:blamer_enabled = 1
@@ -82,7 +120,12 @@ let g:blamer_enabled = 1
 " =NvimTree=
 
 lua << EOF
-require("nvim-tree").setup()
+require("nvim-tree").setup({
+    diagnostics = {
+	enable = true,
+	show_on_dirs = true
+    }
+})
 
 local nvim_tree_events = require('nvim-tree.events')
 local bufferline_state = require('bufferline.state')
@@ -105,7 +148,19 @@ EOF
 " =Toggleterm=
 
 lua << EOF
-require("toggleterm").setup {}
+require("toggleterm").setup{
+    on_open = function(terminal)
+	local nvimtree = require "nvim-tree"
+	local nvimtree_view = require "nvim-tree.view"
+	if nvimtree_view.is_visible() and terminal.direction == "horizontal" then
+	  local nvimtree_width = vim.fn.winwidth(nvimtree_view.get_winnr())
+	  nvimtree.toggle()
+	  nvimtree_view.View.width = nvimtree_width
+	  nvimtree.toggle(false, true)
+	end
+    end
+}
+
 local lazygit = require("toggleterm.terminal").Terminal:new({
   cmd = "lazygit",
   dir = "git_dir",
@@ -143,17 +198,6 @@ endfunction
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
-
-
-
-" =Keybindings=
-
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
 
 " =Basics=
 
@@ -232,6 +276,8 @@ endif
 " =Notifications
 
 lua << EOF
+require("notify").setup()
+vim.notify = require("notify")
 local coc_status_record = {}
 
 function coc_status_notify(msg, level)
