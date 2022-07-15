@@ -41,6 +41,7 @@ Plug 'romgrk/barbar.nvim'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'OrangeT/vim-csharp'
 call plug#end()
 
 " =WhichKey=
@@ -94,8 +95,11 @@ map <C-k> <C-w>k
 map <C-l> <C-w>l
 
 " =IndentBlankline=
+
 lua << EOF
-require("indent_blankline").setup {}
+require("indent_blankline").setup {
+    show_end_of_line = true,
+}
 EOF
 
 " =Telescope=
