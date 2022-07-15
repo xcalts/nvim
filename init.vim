@@ -76,6 +76,9 @@ wk.register({
 })
 EOF
 
+" =Blamer=
+let g:blamer_enabled = 1
+
 " =NvimTree=
 
 lua << EOF
