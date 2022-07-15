@@ -5,12 +5,11 @@
 if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim"'))
 	echo "Downloading junegunn/vim-plug to manage plugins..."
 	silent !mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/
-	" silent !curl "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim
-	" autocmd VimEnter * PlugInstall
+	silent !curl "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" > ${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autoload/plug.vim
+	autocmd VimEnter * PlugInstall
 endif
 
 call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/plugged"'))
-
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
@@ -21,12 +20,9 @@ Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'}
-
 Plug 'vim-airline/vim-airline'
 Plug 'rcarriga/nvim-notify'
-Plug 'ryanoasis/vim-devicons'
 Plug 'ellisonleao/gruvbox.nvim'
-Plug 'preservim/nerdtree'
 Plug 'puremourning/vimspector'
 Plug 'folke/which-key.nvim'
 Plug 'APZelos/blamer.nvim'
@@ -35,10 +31,70 @@ Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 Plug 'akinsho/toggleterm.nvim', {'tag' : 'v2.*'}
 Plug 'numToStr/Comment.nvim'
 Plug 'OmniSharp/omnisharp-vim'
-
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'romgrk/barbar.nvim'
+Plug 'kyazdani42/nvim-tree.lua'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 call plug#end()
 
+" =WhichKey=
+
+lua << EOF
+require("which-key").setup {}
+local wk = require("which-key")
+wk.register({
+  ["<F5>"]       = { "<Plug>VimspectorContinue", "Vimspector: start/continue debugging." },
+  ["<S-F5>"]     = { "<Plug>VimspectorStop", "Vimspector: stop debugging." },
+  ["<CS-F5"]     = { "<Plug>VimspectorRestart", "Vimspector: restart debugging." },
+  ["<F6>"]       = { "<Plug>VimspectorPause", "Vimspector: pause debugger." },
+  ["<F9>"]       = { "<PlugVimspectorToggleBreakpoint>", "Vimspector: toggle breakpoint." },
+  ["<F10>"]      = { "<Plug>VimspectorStepOver", "Vimspector: step over." },
+  ["<F11>"]      = { "<Plug>VimspectorStepInto", "Vimspector: step into." },
+  ["<S-F11>"]    = { "<Plug>VimspectorStepOut", "Vimspector: step out of current function." },
+
+  ["<leader>n"]  = { "<cmd>NvimTreeToggle<cr>", "NvimTree: open and close tree." },
+
+  ["<leader>c"]  = { name = "+Customs" },
+  ["<leader>co"] = { ":setlocal spell! spelllang=en_us<cr>", "Customs: check spell." },
+
+  ["<leader>g"]  = { name = "+Coc"},
+  ["<F12>"]      = { "<Plug>(coc-implementation)", "Coc: go to implementation." },
+  ["<S-F12>"]    = { "<Plug>(coc-references)", "Coc: find references." },
+  ["<F2>"]       = { "<Plug>(coc-rename)", "Coc: rename symbol." },
+
+  ["<leader>f"]  = { name = "+Telescope"},
+  ["<leader>ff"] = { "<cmd>Telescope find_files<cr>", "Telescope: lists files in your cwd." },
+  ["<leader>fg"] = { "<cmd>Telescope live_grep<cr>", "Telescope: search for a string in your cwd live." },
+  ["<leader>fb"] = { "<cmd>Telescope buffers<cr>", "Telescope: lists open buffers in current instance." },
+
+  ["<leader>t"]  = { name = "+Toggleterm" },
+  ["<leader>tt"] = { "<cmd>ToggleTerm size=20 dir=. direction=horizontal<cr>", "ToggleTerm: spawn a terminal." },
+  ["<leader>tg"] = { "<cmd>lua _lazygit_toggle()<cr>", "ToggleTerm: spawn lazygit." },
+  ["<A-,>"]    = { "<cmd>BufferPrevious<cr>", "" },
+  ["<A-.>"]    = { "<cmd>BufferNext<cr>", "" },
+  ["<A-w>"]     = { "<cmd>BufferClose<cr>", "" },
+})
+EOF
+
+" =NvimTree=
+
+lua << EOF
+require("nvim-tree").setup()
+
+local nvim_tree_events = require('nvim-tree.events')
+local bufferline_state = require('bufferline.state')
+
+nvim_tree_events.on_tree_open(function ()
+  bufferline_state.set_offset(31, "File Tree")
+end)
+
+nvim_tree_events.on_tree_close(function ()
+  bufferline_state.set_offset(0)
+end)
+EOF
+
 " =Comment=
+
 lua << EOF
 require('Comment').setup()
 EOF
@@ -70,7 +126,6 @@ function _lazygit_toggle()
 end
 EOF
 
-
 " =Coc=
 
 " Use K to show documentation in preview window.
@@ -87,44 +142,9 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 
-" =WhichKey=
-
-lua << EOF
-require("which-key").setup {}
-local wk = require("which-key")
-wk.register({
-  ["<F5>"]       = { "<Plug>VimspectorContinue", "Vimspector: start/continue debugging." },
-  ["<S-F5>"]     = { "<Plug>VimspectorStop", "Vimspector: stop debugging." },
-  ["<CS-F5"]     = { "<Plug>VimspectorRestart", "Vimspector: restart debugging." },
-  ["<F6>"]       = { "<Plug>VimspectorPause", "Vimspector: pause debugger." },
-  ["<F9>"]       = { "<PlugVimspectorToggleBreakpoint>", "Vimspector: toggle breakpoint." },
-  ["<F10>"]      = { "<Plug>VimspectorStepOver", "Vimspector: step over." },
-  ["<F11>"]      = { "<Plug>VimspectorStepInto", "Vimspector: step into." },
-  ["<S-F11>"]    = { "<Plug>VimspectorStepOut", "Vimspector: step out of current function." },
-
-  ["<leader>n"]  = { name = "+Nerdtree" },
-  ["<leader>no"]  = { ":NERDTreeToggle<cr>", "Nerdtree: open tree." },
-
-  ["<leader>c"]  = { name = "+Customs" },
-  ["<leader>co"] = { ":setlocal spell! spelllang=en_us<cr>", "Customs: check spell." },
-
-  ["<leader>g"]  = { name = "+Coc"},
-  ["<F12>"]      = { "<Plug>(coc-implementation)", "Coc: go to implementation." },
-  ["<S-F12>"]    = { "<Plug>(coc-references)", "Coc: find references." },
-  ["<F2>"]       = { "<Plug>(coc-rename)", "Coc: rename symbol." },
-
-  ["<leader>f"]  = { name = "+Telescope"},
-  ["<leader>ff"] = { "<cmd>Telescope find_files<cr>", "Telescope: lists files in your cwd." },
-  ["<leader>fg"] = { "<cmd>Telescope live_grep<cr>", "Telescope: search for a string in your cwd live." },
-  ["<leader>fb"] = { "<cmd>Telescope buffers<cr>", "Telescope: lists open buffers in current instance." },
-
-  ["<leader>t"]  = { name = "+Toggleterm" },
-  ["<leader>tt"] = { "<cmd>ToggleTerm size=20 dir=. direction=horizontal<cr>", "ToggleTerm: spawn a terminal." },
-  ["<leader>tg"] = { "<cmd>lua _lazygit_toggle()<cr>", "ToggleTerm: spawn lazygit." },
-})
-EOF
 
 " =Keybindings=
+
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 map <C-h> <C-w>h
@@ -205,16 +225,6 @@ autocmd BufWritePost ~/.local/src/dwmblocks/config.h !cd ~/.local/src/dwmblocks/
 if &diff
 highlight! link DiffText MatchParen
 endif
-
-" =Nerdtree=
-let g:NERDTreeIgnore = ['^bin$[[dir]]', '^obj$[[dir]]']
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-if has('nvim')
-    let NERDTreeBookmarksFile = stdpath('data') . '/NERDTreeBookmarks'
-else
-    let NERDTreeBookmarksFile = '~/.vim' . '/NERDTreeBookmarks'
-endif
-let NERDTreeShowHidden=1
 
 " =Notifications
 
